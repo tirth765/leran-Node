@@ -1,19 +1,15 @@
 require('dotenv').config()
 const express = require('express')
+const route = require('./routes/api/v1')
 
 const app = express()
 const port = 8000
+//http://localhost:8000/product
+
+
+app.use('/api/v1', route)
+
 
 app.listen(8000, () => {
     console.log(`Example app listening on port`)
 })
-
-app.get('/demo', (req, res) => {
-    res.send('get Method!')
-})
-
-app.post('/demo', (req, res) => {
-    res.send('post Method!')
-})
-
-// console.log('Hello Node!', process.env.PORT);
