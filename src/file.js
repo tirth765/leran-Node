@@ -14,7 +14,6 @@ fs.writeFile('src/data/demo.txt','Hello', (err) => {
     console.log('File is ceated');
 })  
 
-
 fs.appendFile('src/data/demo.txt', ' Hi', (err) => {
     if(err) {
         console.log(err);

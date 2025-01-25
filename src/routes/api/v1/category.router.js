@@ -1,4 +1,5 @@
 const express = require('express')
+const { categoryController } = require('../../../controller/index.js')
 
 const routes = express.Router()
 
@@ -6,17 +7,17 @@ const routes = express.Router()
 routes.get(
     '/get-categores',
 
-     (req, res) => {
-    res.send('get categores')
-})
+     
+    categoryController.getCategores
+)
 
 //http://localhost:8000/api/v1/category/post-category
 routes.post(
     '/post-category',
 
-     (req, res) => {
-    res.send('post category')
-})
+    
+    categoryController.postCategores
+)
 
 //http://localhost:8000/api/v1/category/put-category:id
 routes.put(
