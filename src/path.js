@@ -1,6 +1,6 @@
 const path = require('path');
 
-console.log(__dirname);
+console.log(__dirname); 
 // output:- B:\gojo chapter-1\leran Node\src
 
 console.log(__filename);
@@ -10,7 +10,7 @@ console.log(path.basename(__dirname));
 // output:- src
 
 console.log(path.basename(__filename));
-// output:- path.js
+// output:- path.js 
 
 console.log(path.extname(__filename));
 // output:- .js

@@ -1,37 +1,34 @@
-const express = require('express')
-const { categoryController } = require('../../../controller/index.js')
+const express = require("express");
+const { categoryController } = require("../../../controller/index.js");
 
-const routes = express.Router()
+const routes = express.Router();
 
 //http://localhost:8000/api/v1/category/get-categores
 routes.get(
-    '/get-categores',
+  "/get-categores",
 
-     
-    categoryController.getCategores
-)
+  categoryController.getCategores
+);
 
 //http://localhost:8000/api/v1/category/post-category
 routes.post(
-    '/post-category',
+  "/post-category",
 
-    
-    categoryController.postCategores
-)
+  categoryController.postCategores
+);
 
 //http://localhost:8000/api/v1/category/put-category:id
 routes.put(
-    '/put-category:id',
+  "/put-category:id",
 
-     (req, res) => {
-    res.send('put category')
-})
+  categoryController.putCategores
+);
 
 //http://localhost:8000/api/v1/category/delete-category:id
 routes.delete(
-    '/delete-category:id',
+  "/delete-category:id",
 
-     (req, res) => {
-    res.send('delete category')
-})
+  categoryController.deleteCategores
+);
+
 module.exports = routes;

@@ -5,7 +5,7 @@ console.log(url.parse('https://www.amazon.in/Noise-Launched-Bluetooth-Calling-Tr
 const obj = {
     protocol: 'https:',
     host: 'www.Tirth.in',
-}
+}    
 
 console.log(url.format(obj));
 
