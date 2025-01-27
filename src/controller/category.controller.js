@@ -1,4 +1,6 @@
-const getCategores = (req, res) => {
+const Categores = require("../models/category.model");
+
+const getCategores = async (req, res) => {
   try {
     res.send("get categores");
   } catch (error) {
@@ -6,11 +8,34 @@ const getCategores = (req, res) => {
   }
 };
 
-const postCategores = (req, res) => {
+const postCategores = async (req, res) => {
   try {
-    res.send("post category");
+
+    console.log(req.body);
+
+    const category = await Categores.create(req.body)
+    if (!category) {
+      return res.status(400)
+        .json({
+          success: false,
+          data: [],
+          message: "Error"
+        })
+    }
+    return res.status(201)
+      .json({
+        success: false,
+        data: category,
+        message: "new category created"
+      })
+
   } catch (error) {
-    console.log(error);
+    return res.status(500)
+      .json({
+        success: false,
+        data: [],
+        message: "Internal server Error" + error.message
+      })
   }
 };
 

@@ -1,35 +1,28 @@
 const express = require('express')
+const { productController } = require('../../../controller')
 
 const routes = express.Router()
 
 //http://localhost:8000/api/v1/product/get-products
 routes.get(
     '/get-products',
-
-     (req, res) => {
-    res.send('get products')
-})
+    productController.getproducts
+)
 
 routes.post(
     '/post-product',
-
-     (req, res) => {
-    res.send('post product')
-})
+    productController.postproduct
+)
 
 
 routes.put(
     '/put-product:id',
-
-     (req, res) => {
-    res.send('put product')
-})
+    productController.putproduct
+)
 
 routes.delete(
     '/delete-product:id',
-
-     (req, res) => {
-    res.send('delete product')
-})
+    productController.deleteproduct
+)
 
 module.exports = routes;
