@@ -11,9 +11,10 @@ const getCategores = async (req, res) => {
 const postCategores = async (req, res) => {
   try {
 
-    console.log(req.body);
+    console.log("hi ",req.body);
 
-    const category = await Categores.create(req.body)
+    const category = await Categores.create({...req.body, cat_img: req.file.path})
+
     if (!category) {
       return res.status(400)
         .json({
@@ -24,7 +25,7 @@ const postCategores = async (req, res) => {
     }
     return res.status(201)
       .json({
-        success: false,
+        success: true,
         data: category,
         message: "new category created"
       })

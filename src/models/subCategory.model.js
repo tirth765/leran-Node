@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 const SubCategorySchema = new mongoose.Schema(
     {
         SubCategoryId: {
-            type : mongoose.type.ObjectId,
-            ref: 'category',
+            type : mongoose.Types.ObjectId,
+            ref: 'Categores',
             required: true
         },
         name: {

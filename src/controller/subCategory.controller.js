@@ -1,3 +1,5 @@
+const SubCategores = require("../models/subCategory.model");
+
 const getsubCategores = (req, res) => {
     try {
       res.send("get subcategores");
@@ -6,11 +8,34 @@ const getsubCategores = (req, res) => {
     }
   };
   
-  const postsubCategores = (req, res) => {
+  const postsubCategores = async(req, res) => {
     try {
-      res.send("post subcategory");
+
+      console.log(req.body);
+  
+      const subCategory = await SubCategores.create(req.body)
+      if (!subCategory) {
+        return res.status(400)
+          .json({
+            success: false,
+            data: [],
+            message: "Error"
+          })
+      }
+      return res.status(201)
+        .json({
+          success: true,
+          data: subCategory,
+          message: "new subCategory created"
+        })
+  
     } catch (error) {
-      console.log(error);
+      return res.status(500)
+        .json({
+          success: false,
+          data: [],
+          message: "Internal server Error" + error.message
+        })
     }
   };
   

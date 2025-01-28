@@ -1,5 +1,6 @@
  const { categoryController } = require("../../../controller/index.js");
- const express = require('express')
+ const express = require('express');
+const upload = require("../../../middleware/Upload.js");
 
 const routes = express.Router();
 
@@ -13,7 +14,7 @@ routes.get(
 //http://localhost:8000/api/v1/category/post-category
 routes.post(
   "/post-category",
-
+  upload.single('cat_img'), 
   categoryController.postCategores
 );
 
