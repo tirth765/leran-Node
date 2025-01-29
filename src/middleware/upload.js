@@ -14,7 +14,6 @@ const storage = multer.diskStorage({
             if (err) {
                 console.log("not now",err);
             }
-           
         })
 
         cb(null, filePath)
