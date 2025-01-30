@@ -4,32 +4,38 @@ const upload = require("../../../middleware/Upload.js");
 
 const routes = express.Router();
 
-//http://localhost:8000/api/v1/category/get-categores
+//http://localhost:8000/api/v1/category/list-categores
 routes.get(
-  "/get-categores",
+  "/list-categores",
 
-  categoryController.getCategores
+  categoryController.listCategores
+);
+
+//http://localhost:8000/api/v1/category/get-category
+routes.get(
+  "/get-category/:id",
+  categoryController.getCategory
 );
 
 //http://localhost:8000/api/v1/category/post-category
 routes.post(
   "/post-category",
   upload.single('cat_img'), 
-  categoryController.postCategores
+  categoryController.addCategory
 );
 
 //http://localhost:8000/api/v1/category/put-category:id
 routes.put(
-  "/put-category:id",
+  "/put-category/:id",
 
-  categoryController.putCategores
+  categoryController.updateCategory
 );
 
 //http://localhost:8000/api/v1/category/delete-category:id
 routes.delete(
-  "/delete-category:id",
+  "/delete-category/:id",
 
-  categoryController.deleteCategores
+  categoryController.deleteCategory
 );
 
 module.exports = routes;

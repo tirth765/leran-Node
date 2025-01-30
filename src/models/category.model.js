@@ -16,7 +16,6 @@ const CategorySchema = new mongoose.Schema(
         },
         cat_img: {
             type: String,
-            required: true,
         }
     },
     {
