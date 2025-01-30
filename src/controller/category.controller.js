@@ -94,59 +94,46 @@ const addCategory = async (req, res) => {
 };
 
 const updateCategory = async (req, res) => {
-  console.log(req.params.id);
-
   try {
-
-    if (req.file) {
-      const oldcategory = await Categores.findById(req.params.id, { ...req.body }, {
-        new: true,
-        runValidators: true
-      })
-
-      fs.unlink(oldcategory.cat_img, req.file.path, (err) => {
-        if (err) {
-          return res.status(400)
-            .json({
-              success: false,
-              data: [],
-              message: "Error" 
-            })
-        }
-
-      })
-    } else {
-      const category = await Categores.findByIdAndUpdate(req.params.id, { ...req.body }, {
-        new: true,
-        runValidators: true
-      })
+      let updatedAll;
+      const OldCategory = await Categores.findById(req.params.id);
+      if(req.file){
+          updatedAll = {...req.body, cat_img: req.file.path};
+          fs.unlink(OldCategory.cat_img, (err) => {
+              if(err){
+                  return res.status(400).json({
+                      success: false,
+                      data: null,
+                      message: "ErrError in update category: " 
+                  })
+              }
+          })
+      } else {
+          updatedAll =  {...req.body}
+      }
+      const category = await Categories.findByIdAndUpdate(req.params.id, updatedAll, { new: true, runValidators: true });
 
       if (!category) {
-        return res.status(400)
-          .json({
-            success: false,
-            data: [],
-            message: "Error"
+          return res.status(400).json({
+              success: false,
+              data: null,
+              message: "Error during the update category."
           })
       }
-      return res.status(200)
-        .json({
+
+      res.status(200).json({
           success: true,
           data: category,
-          message: "category Updated Succesfully"
-        })
-    }
-
-
+          message: "category updated successfully."
+      })
   } catch (error) {
-    return res.status(500)
-      .json({
-        success: false,
-        data: [],
-        message: "Internal server Error" + error.message
+      res.status(500).json({
+          success: false,
+          data: null,
+          message: "Internal server error:" + error.message
       })
   }
-};
+}
 
 const deleteCategory = async (req, res) => {
   console.log(req.params.id);
