@@ -4,7 +4,7 @@ const fs = require("fs");
 const listCategores = async (req, res) => {
   try {
     const categores = await Categores.find()
-    res.json(categores)
+    
     if (!categores) {
       return res.status(400)
         .json({
@@ -64,7 +64,7 @@ const getCategory = async (req, res) => {
 const addCategory = async (req, res) => {
   try {
 
-    console.log("hi ", req.body);
+    console.log("hi ", req.body, req.file);
 
     const category = await Categores.create({ ...req.body, cat_img: req.file.path })
 
@@ -157,12 +157,16 @@ const deleteCategory = async (req, res) => {
     }
 
     fs.unlink(category.cat_img, (err) => {
-      return res.status(400)
+      if(err) {
+        return res.status(400)
         .json({
           success: false,
           data: null,
           message: "Error"
-        })
+        })      
+      } 
+
+    
     })
 
 

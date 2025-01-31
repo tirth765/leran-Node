@@ -8,6 +8,7 @@ const app = express()
 app.use(express.json())
 const port = 8000
 
+app.use('/public', express.static('public'))
 
 var corsOptions = {
     origin: 'http://localhost:3000',
