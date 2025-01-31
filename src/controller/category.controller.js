@@ -98,26 +98,30 @@ const updateCategory = async (req, res) => {
       let updatedAll;
       const OldCategory = await Categores.findById(req.params.id);
       if(req.file){
-          updatedAll = {...req.body, cat_img: req.file.path};
+        const  updatedAll = {...req.body, cat_img: req.file.path};
           fs.unlink(OldCategory.cat_img, (err) => {
               if(err){
                   return res.status(400).json({
                       success: false,
                       data: null,
-                      message: "ErrError in update category: " 
+                      message: "Error in update category: " 
                   })
               }
           })
       } else {
           updatedAll =  {...req.body}
       }
-      const category = await Categories.findByIdAndUpdate(req.params.id, updatedAll, { new: true, runValidators: true });
+
+      const category = await Categores.findByIdAndUpdate(req.params.id,
+        updatedAll,
+        { new: true, runValidators: true }
+      );
 
       if (!category) {
           return res.status(400).json({
               success: false,
               data: null,
-              message: "Error during the update category."
+              message: "Error during the update."
           })
       }
 

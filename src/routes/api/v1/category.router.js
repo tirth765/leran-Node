@@ -27,7 +27,7 @@ routes.post(
 //http://localhost:8000/api/v1/category/put-category:id
 routes.put(
   "/put-category/:id",
-
+  upload.single('cat_img'), 
   categoryController.updateCategory
 );
 
