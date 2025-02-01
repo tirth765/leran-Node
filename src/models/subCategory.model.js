@@ -5,6 +5,9 @@ const SubCategorySchema = new mongoose.Schema(
         SubCategoryId: {
             type : mongoose.Types.ObjectId,
             ref: 'Categores',
+        },
+        Category: {
+            type: String,
             required: true
         },
         name: {
@@ -15,9 +18,11 @@ const SubCategorySchema = new mongoose.Schema(
         },
         description: {
             type: String,
-            unique: true,
             required: true,
             trim: true
+        },
+        subcat_img: {
+            type: String,
         }
     },
     {

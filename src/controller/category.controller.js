@@ -63,9 +63,6 @@ const getCategory = async (req, res) => {
 
 const addCategory = async (req, res) => {
   try {
-
-    console.log("hi ", req.body, req.file);
-
     const category = await Categores.create({ ...req.body, cat_img: req.file.path })
 
     if (!category) {
@@ -98,16 +95,16 @@ const updateCategory = async (req, res) => {
       let updatedAll;
       const OldCategory = await Categores.findById(req.params.id);
       if(req.file){
-        const  updatedAll = {...req.body, cat_img: req.file.path};
-          fs.unlink(OldCategory.cat_img, (err) => {
-              if(err){
-                  return res.status(400).json({
-                      success: false,
-                      data: null,
-                      message: "Error in update category: " 
-                  })
-              }
-          })
+         updatedAll = {...req.body, cat_img: req.file.path};
+          // fs.unlink(OldCategory.cat_img, (err) => {
+          //     if(err){
+          //         return res.status(400).json({
+          //             success: false,
+          //             data: null,
+          //             message: "Error in update category: " 
+          //         })
+          //     }
+          // })
       } else {
           updatedAll =  {...req.body}
       }

@@ -18,12 +18,14 @@ routes.post(
 
 
 routes.put(
-    '/put-product:id',
+    '/put-product/:id',
+    upload.single("product_img"),
+
     productController.putproduct
 )
 
 routes.delete(
-    '/delete-product:id',
+    '/delete-product/:id',
     productController.deleteproduct
 )
 

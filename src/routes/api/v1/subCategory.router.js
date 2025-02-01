@@ -18,16 +18,16 @@ routes.post(
     subCategoryController.postsubCategores
 )
 
-//http://localhost:8000/api/v1/subCategory/put-subCategory:id
+//http://localhost:8000/api/v1/subCategory/put-subCategory/:id
 routes.put(
-    '/put-subCategory:id',
-
+    '/put-subCategory/:id',
+    upload.single('subcat_img'), 
     subCategoryController.putsubCategores
 )
 
-//http://localhost:8000/api/v1/subCategory/delete-subCategory:id
+//http://localhost:8000/api/v1/subCategory/delete-subCategory/:id
 routes.delete(
-    '/delete-subCategory:id',
+    '/delete-subCategory/:id',
     
     subCategoryController.deletesubCategores
 )
