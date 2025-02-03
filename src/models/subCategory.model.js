@@ -23,6 +23,7 @@ const SubCategorySchema = new mongoose.Schema(
         },
         subcat_img: {
             type: String,
+            required: true,
         }
     },
     {
