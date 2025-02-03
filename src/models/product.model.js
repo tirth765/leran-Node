@@ -6,6 +6,14 @@ const ProductSchema = new mongoose.Schema(
             type : mongoose.Types.ObjectId,
             ref: 'SubCategores',
             required: true
+        }, 
+        Category: {
+            type: String,
+            required: true
+        },
+        SubCategory: {
+            type: String,
+            required: true
         },
         name: {
             type: String,

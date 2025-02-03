@@ -60,19 +60,93 @@ const postproduct = async (req, res) => {
   }
 };
 
-const putproduct = (req, res) => {
+const putproduct = async(req, res) => {
   try {
-    res.send("put product");
-  } catch (error) {
-    console.log(error);
-  }
+    let updatedAll;
+    const OldCategory = await SubCategores.findById(req.params.id);
+    if(req.file){
+       updatedAll = {...req.body, product_img: req.file.path};
+        // fs.unlink(OldCategory.subcat_img, (err) => {
+        //     if(err){
+        //         return res.status(400).json({
+        //             success: false,
+        //             data: null,
+        //             message: "Error in update category: " 
+        //         })
+        //     }
+        // })
+    } else {
+        updatedAll =  {...req.body}
+    }
+
+    const product = await product.findByIdAndUpdate(req.params.id,
+      updatedAll,
+      { new: true, runValidators: true }
+    );
+
+    if (!product) {
+        return res.status(400).json({
+            success: false,
+            data: null,
+            message: "Error during the update."
+        })
+    }
+
+    res.status(200).json({
+        success: true,
+        data: product,
+        message: "updated successfully."
+    })
+} catch (error) {
+    res.status(500).json({
+        success: false,
+        data: null,
+        message: "Internal server error:" + error.message
+    })
+}
 };
 
-const deleteproduct = (req, res) => {
+const deleteproduct = async(req, res) => {
   try {
-    res.send("delete product");
+    const product = await Product.findByIdAndDelete(req.params.id)
+    
+    if (!product) {
+      return res.status(400)
+        .json({
+          success: false,
+          data: [],
+          message: "Error"
+        })
+    }
+
+    fs.unlink(product.product_img, (err) => {
+      if(err) {
+        return res.status(400)
+        .json({
+          success: false,
+          data: null,
+          message: "Error"
+        })      
+      } 
+
+    
+    })
+
+
+    return res.status(200)
+      .json({
+        success: true,
+        data: product,
+        message: "product delete Succesfully"
+      })
+
   } catch (error) {
-    console.log(error);
+    return res.status(500)
+      .json({
+        success: false,
+        data: [],
+        message: "Internal server Error" + error.message
+      })
   }
 };
 
