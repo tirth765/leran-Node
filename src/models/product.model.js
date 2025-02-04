@@ -5,16 +5,16 @@ const ProductSchema = new mongoose.Schema(
         ProductId: {
             type : mongoose.Types.ObjectId,
             ref: 'SubCategores',
-            required: true
+            // required: true
         }, 
         Category: {
             type: String,
             required: true
         },
-        SubCategory: {
-            type: String,
-            required: true
-        },
+        // SubCategory: {
+        //     type: String,
+        //     required: true
+        // },
         name: {
             type: String,
             required: true,
@@ -27,6 +27,7 @@ const ProductSchema = new mongoose.Schema(
         },
         product_img: {
             type: String,
+            required:true
         }
        
     },

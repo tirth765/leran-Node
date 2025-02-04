@@ -10,6 +10,14 @@ routes.get(
     productController.getproducts
 )
 
+// http://localhost:8000/api/v1/product/get-subcat  
+routes.get(
+    '/get-subcat/:id',
+    productController.getSubcat
+
+)
+
+// http://localhost:8000/api/v1/product/post-product  
 routes.post(
     '/post-product',
     upload.single("product_img"),

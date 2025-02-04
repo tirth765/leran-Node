@@ -31,7 +31,7 @@ const postsubCategores = async (req, res) => {
   try {
     console.log(req.body);
 
-    const subCategory = await SubCategores.create(req.body);
+    const subCategory = await SubCategores.create({...req.body, subcat_img: req.file.path});
     if (!subCategory) {
       return res.status(400).json({
         success: false,
@@ -59,15 +59,15 @@ const putsubCategores = async (req, res) => {
     const OldCategory = await SubCategores.findById(req.params.id);
     if (req.file) {
       updatedAll = { ...req.body, subcat_img: req.file.path };
-      fs.unlink(OldCategory.subcat_img, (err) => {
-        if (err) {
-          return res.status(400).json({
-            success: false,
-            data: null,
-            message: "Error in update category: ",
-          });
-        }
-      });
+      // fs.unlink(OldCategory.subcat_img, (err) => {
+      //   if (err) {
+      //     return res.status(400).json({
+      //       success: false,
+      //       data: null,
+      //       message: "Error in update category: ",
+      //     });
+      //   }
+      // });
     } else {
       updatedAll = { ...req.body };
     }

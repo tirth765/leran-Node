@@ -1,5 +1,6 @@
 const Products = require("../models/product.model");
 const fs = require("fs");
+const SubCategores = require("../models/subCategory.model");
 
 const getproducts = async (req, res) => {
   try {
@@ -18,7 +19,39 @@ const getproducts = async (req, res) => {
       .json({
         success: true,
         data: products,
-        message: "All Categores List Succesfully"
+        message: "All Product List Succesfully"
+      })
+
+  } catch (error) {
+    return res.status(500)
+      .json({
+        success: false,
+        data: null,
+        message: "Internal server Error" + error.message
+      })
+  }
+};
+
+const getSubcat = async (req, res) => {
+  try {
+    console.log(req.params.id);
+    
+    const subcat = await SubCategores.find({Category: req.params.id})
+
+    if (!subcat) {
+      return res.status(400)
+        .json({
+          success: false,
+          data: null,
+          message: "Error"
+        })
+    }
+
+    return res.status(200)
+      .json({
+        success: true,
+        data: subcat,
+        message: "All Product List Succesfully"
       })
 
   } catch (error) {
@@ -108,7 +141,7 @@ const putproduct = async(req, res) => {
 
 const deleteproduct = async(req, res) => {
   try {
-    const product = await Product.findByIdAndDelete(req.params.id)
+    const product = await Products.findByIdAndDelete(req.params.id)
     
     if (!product) {
       return res.status(400)
@@ -155,5 +188,6 @@ module.exports = {
   getproducts,
   postproduct,
   putproduct,
-  deleteproduct
+  deleteproduct,
+  getSubcat
 }
