@@ -1,6 +1,6 @@
 const Products = require("../models/product.model");
 const fs = require("fs");
-const SubCategores = require("../models/subCategory.model");
+// const SubCategores = require("../models/subCategory.model");
 
 const getproducts = async (req, res) => {
   try {
@@ -96,23 +96,25 @@ const postproduct = async (req, res) => {
 const putproduct = async(req, res) => {
   try {
     let updatedAll;
-    const OldCategory = await SubCategores.findById(req.params.id);
+    
+    const OldCategory = await Products.findById(req.params.id);
     if(req.file){
        updatedAll = {...req.body, product_img: req.file.path};
-        // fs.unlink(OldCategory.subcat_img, (err) => {
-        //     if(err){
-        //         return res.status(400).json({
-        //             success: false,
-        //             data: null,
-        //             message: "Error in update category: " 
-        //         })
-        //     }
-        // })
+        fs.unlink(OldCategory.product_img, (err) => {
+            if(err){
+                return res.status(400).json({
+                    success: false,
+                    data: null,
+                    message: "Error in update category: " 
+                })
+            }
+        })
     } else {
         updatedAll =  {...req.body}
+
     }
 
-    const product = await product.findByIdAndUpdate(req.params.id,
+    const product = await Products.findByIdAndUpdate(req.params.id,
       updatedAll,
       { new: true, runValidators: true }
     );

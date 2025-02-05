@@ -24,7 +24,7 @@ routes.post(
     productController.postproduct
 )
 
-
+// http://localhost:8000/api/v1/product/put-product  
 routes.put(
     '/put-product/:id',
     upload.single("product_img"),
