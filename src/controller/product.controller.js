@@ -1,6 +1,6 @@
 const Products = require("../models/product.model");
 const fs = require("fs");
-// const SubCategores = require("../models/subCategory.model");
+const SubCategores = require("../models/subCategory.model");
 
 const getproducts = async (req, res) => {
   try {
