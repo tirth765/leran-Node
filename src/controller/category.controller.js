@@ -46,7 +46,7 @@ const getCategory = async (req, res) => {
 
     return res.status(200)
       .json({
-        success: true,
+        success: true, 
         data: category,
         message: "All Category List Succesfully"
       })
