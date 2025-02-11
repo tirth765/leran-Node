@@ -88,7 +88,7 @@ const addCategory = async (req, res) => {
         message: "Internal server Error" + error.message
       })
   }
-};
+};  
 
 const updateCategory = async (req, res) => {
   try {
@@ -104,7 +104,7 @@ const updateCategory = async (req, res) => {
           //             message: "Error in update category: " 
           //         })
           //     }
-          // })
+          // })  
       } else {
           updatedAll =  {...req.body}
       }
