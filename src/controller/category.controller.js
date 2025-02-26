@@ -89,6 +89,41 @@ const addCategory = async (req, res) => {
       })
   }
 };  
+const getcatNo = async(req, res) => {
+  try {
+    const catno = await Categores.aggregate(
+      [
+        {
+          $count: "cat no:"
+        }
+      ]
+    )
+    
+    if (!catno) {
+      return res.status(404)
+        .json({
+          success: false,
+          data: null,
+          message: "Error"
+        })
+    }
+
+    return res.status(200)
+      .json({
+        success: true,
+        data: catno,
+        message: "All Categore No find"
+      })
+
+  } catch (error) {
+    return res.status(500)
+      .json({
+        success: false,
+        data: null,
+        message: "Internal server Error" + error.message
+      })
+  }
+}
 
 const updateCategory = async (req, res) => {
   try {
@@ -189,5 +224,6 @@ module.exports = {
   getCategory,
   addCategory,
   updateCategory,
-  deleteCategory
+  deleteCategory,
+  getcatNo
 };

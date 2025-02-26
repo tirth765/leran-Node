@@ -11,6 +11,12 @@ routes.get(
   categoryController.listCategores
 );
 
+routes.get(
+  "/catno-categor",
+
+  categoryController.getcatNo
+);
+
 //http://localhost:8000/api/v1/category/get-category
 routes.get(
   "/get-category/:id",
