@@ -89,6 +89,7 @@ const addCategory = async (req, res) => {
       })
   }
 };  
+
 const getcatNo = async(req, res) => {
   try {
     const catno = await Categores.aggregate(
@@ -219,11 +220,120 @@ const deleteCategory = async (req, res) => {
   }
 };
 
+
+
+const listCategoresActive = async (req, res) => {
+  try {
+    const categores = await Categores.aggregate(
+      [
+        {
+          $match: {
+            isActive: "true"
+          }
+        },
+        {
+          $count: 'Number of Acive Categores'
+        }
+      ]
+    )
+    
+
+    if (!categores) {
+      return res.status(400)
+        .json({
+          success: false,
+          data: null,
+          message: "Error"
+        })
+    }
+
+    return res.status(200)
+      .json({
+        success: true,
+        data: categores,
+        message: "All Categores List Succesfully"
+      })
+
+  } catch (error) {
+    return res.status(500)
+      .json({
+        success: false,
+        data: null,
+        message: "Internal server Error" + error.message
+      })
+  }
+};
+
+const listCategoresMostProduct = async (req, res) => {
+  try {
+    const categores = await Categores.aggregate(
+      [
+        {
+          $lookup: {
+            from: "products",
+            localField: "_id",
+            foreignField: "Category",
+            as: "result"
+          }
+        },
+         {
+          $addFields: {
+            Datas: { $size: "$result" }
+          }
+        },
+        {
+          $sort: {
+           Datas: -1
+          }
+        },
+        {
+          $limit: 1
+        },
+        {
+          $project: {
+            name: 1,
+            Datas:1
+          }
+        }
+      ]
+    )
+    
+
+    if (!categores) {
+      return res.status(400)
+        .json({
+          success: false,
+          data: null,
+          message: "Error"
+        })
+    }
+
+    return res.status(200)
+      .json({
+        success: true,
+        data: categores,
+        message: "All Categores List Succesfully"
+      })
+
+  } catch (error) {
+    return res.status(500)
+      .json({
+        success: false,
+        data: null,
+        message: "Internal server Error" + error.message
+      })
+  }
+};
+
+
+
 module.exports = {
   listCategores,
   getCategory,
   addCategory,
   updateCategory,
   deleteCategory,
-  getcatNo
+  getcatNo,
+  listCategoresActive,
+  listCategoresMostProduct
 };

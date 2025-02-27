@@ -44,4 +44,21 @@ routes.delete(
   categoryController.deleteCategory
 );
 
+
+
+//http://localhost:8000/api/v1/category/count-active
+routes.get(
+  "/count-active",
+
+  categoryController.listCategoresActive
+);
+
+
+//http://localhost:8000/api/v1/category/most-products
+routes.get(
+  "/most-products",
+
+  categoryController.listCategoresMostProduct
+);
+
 module.exports = routes;
