@@ -32,4 +32,18 @@ routes.delete(
     subCategoryController.deletesubCategores
 )
 
+
+
+//http://localhost:8000/api/v1/subCategory/subcategory/most-products
+routes.get(
+    '/subcategory/most-products',
+    subCategoryController.getMostProduct
+)
+
+//http://localhost:8000/api/v1/subCategory/subcategory/count-products
+routes.get(
+    '/subcategory/count-products',
+    subCategoryController.getEachProductSubCat
+)
+
 module.exports = routes;
