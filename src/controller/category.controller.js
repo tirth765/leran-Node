@@ -264,7 +264,49 @@ const listCategoresActive = async (req, res) => {
   }
 };
 
-const listCategoresMostProduct = async (req, res) => {
+const listCategoresInActive = async (req, res) => {
+  try {
+    const categores = await Categores.aggregate(
+      [
+        {
+          $match: {
+            isActive: "false"
+          }
+        },
+        {
+          $count: 'Number of InAcive Categores'
+        }
+      ]
+    )
+    
+
+    if (!categores) {
+      return res.status(400)
+        .json({
+          success: false,
+          data: null,
+          message: "Error"
+        })
+    }
+
+    return res.status(200)
+      .json({
+        success: true,
+        data: categores,
+        message: "All Categores List Succesfully"
+      })
+
+  } catch (error) {
+    return res.status(500)
+      .json({
+        success: false,
+        data: null,
+        message: "Internal server Error" + error.message
+      })
+  }
+};
+
+const listMostProduct = async (req, res) => {
   try {
     const categores = await Categores.aggregate(
       [
@@ -278,12 +320,12 @@ const listCategoresMostProduct = async (req, res) => {
         },
          {
           $addFields: {
-            Datas: { $size: "$result" }
+            NumberOfProduct: { $size: "$result" }
           }
         },
         {
           $sort: {
-           Datas: -1
+           NumberOfProduct: -1
           }
         },
         {
@@ -292,9 +334,62 @@ const listCategoresMostProduct = async (req, res) => {
         {
           $project: {
             name: 1,
-            Datas:1
+            NumberOfProduct:1
           }
         }
+      ]
+    )
+    
+
+    if (!categores) {
+      return res.status(400)
+        .json({
+          success: false,
+          data: null,
+          message: "Error"
+        })
+    }
+
+    return res.status(200)
+      .json({
+        success: true,
+        data: categores,
+        message: "All Categores List Succesfully"
+      })
+
+  } catch (error) {
+    return res.status(500)
+      .json({
+        success: false,
+        data: null,
+        message: "Internal server Error" + error.message
+      })
+  }
+};
+const CountSubCategory = async (req, res) => {
+  try {
+    const categores = await Categores.aggregate(
+      [
+        {
+          $lookup: {
+            from: "subcategores",
+            localField: "_id",
+            foreignField: "Category",
+            as: "result"
+          }
+        },
+        {
+          $addFields: {
+            Sub: "$result"
+          }
+        },
+        {
+          $unwind: "$Sub"
+        },
+        {
+          $count: 'count of subcategories'
+        }
+        
       ]
     )
     
@@ -335,5 +430,7 @@ module.exports = {
   deleteCategory,
   getcatNo,
   listCategoresActive,
-  listCategoresMostProduct
+  listMostProduct,
+  listCategoresInActive,
+  CountSubCategory
 };

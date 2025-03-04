@@ -53,12 +53,25 @@ routes.get(
   categoryController.listCategoresActive
 );
 
+//http://localhost:8000/api/v1/category/count-inactive
+routes.get(
+  "/count-inactive",
+
+  categoryController.listCategoresInActive
+);
 
 //http://localhost:8000/api/v1/category/most-products
 routes.get(
   "/most-products",
 
-  categoryController.listCategoresMostProduct
+  categoryController.listMostProduct
+);
+
+//http://localhost:8000/api/v1/category/count-subcategories
+routes.get(
+  "/count-subcategories",
+
+  categoryController.CountSubCategory
 );
 
 module.exports = routes;
