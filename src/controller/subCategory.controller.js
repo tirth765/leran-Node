@@ -136,9 +136,112 @@ const deletesubCategores = async (req, res) => {
   }
 };
 
+
+const getMostProduct = async (req, res) => {
+  try {
+    const subcategores = await SubCategores.aggregate(
+
+    [
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "SubCategory",
+          as: "result"
+        }
+      },
+      {
+        $addFields: {
+          Datas: { $size: "$result" }
+        }
+      },
+      {
+        $sort: {
+          Datas: -1
+        }
+      },
+      {
+        $limit: 1
+      }
+    ]
+  )
+
+    if (!subcategores) {
+      return res.status(400).json({
+        success: false,
+        data: null,
+        message: "Error",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: subcategores,
+      message: "All SubCategores List Succesfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      data: null,
+      message: "Internal server Error" + error.message,
+    });
+  }
+};
+
+const getEachProductSubCat = async (req, res) => {
+  try {
+    const subcategores = await SubCategores.aggregate(
+
+      [
+        {
+          $lookup: {
+            from: "products",
+            localField: "_id",
+            foreignField: "SubCategory",
+            as: "result"
+          }
+        },
+        {
+          $addFields: {
+            Datas: { $size: "$result" }
+          }
+        },
+        {
+          $project: {
+            name: 1,
+            Datas: 1
+          }
+        }
+      ]
+  )
+
+    if (!subcategores) {
+      return res.status(400).json({
+        success: false,
+        data: null,
+        message: "Error",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: subcategores,
+      message: "All SubCategores List Succesfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      data: null,
+      message: "Internal server Error" + error.message,
+    });
+  }
+};
+
 module.exports = {
   getsubCategores,
   postsubCategores,
   putsubCategores,
   deletesubCategores,
+  getMostProduct,
+  getEachProductSubCat
 };
