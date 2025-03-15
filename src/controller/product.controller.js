@@ -1,10 +1,19 @@
+
 const Products = require("../models/product.model");
 const fs = require("fs");
 const SubCategores = require("../models/subCategory.model");
 
 const getproducts = async (req, res) => {
   try {
-    const products = await Products.find()
+    const { page, limit } = req.query;
+
+    let products;
+
+    if(page && limit) {
+      products = await Products.find().skip((page-1)*limit).limit(limit);
+    } else {
+      products = await Products.find()
+    }
 
     if (!products) {
       return res.status(400)
@@ -185,11 +194,101 @@ const deleteproduct = async(req, res) => {
   }
 };
 
+const searchProduct = async (req, res) => {
+  try {
+    console.log(req.query);
+    
+    const matchObj = {}
+    const { category, min, max, rating } = req.query
+
+
+    if(category) {
+      matchObj["category_id"] = parseInt(category)
+    }
+
+    if(rating) {
+      matchObj["AvgRating"] = {$gte : parseFloat(rating)}
+    }
+
+    if(max || min) {
+      matchObj["Variant.attributes.Price"] = {}
+    }
+
+    if(min) {
+      matchObj["Variant.attributes.Price"].$gte = parseFloat(min)
+    }
+
+    if(max) {
+      matchObj["Variant.attributes.Price"].$lte = parseFloat(max)
+    }
+
+    const pipeline = [
+      {
+        $lookup: {
+          from: "variant",
+          localField: "_id",
+          foreignField: "product_id",
+          as: "Variant"
+        }
+      },
+      {
+        $unwind: "$Variant"
+      },
+      {
+        $lookup: {
+          from: "review",	
+          localField: "_id",
+          foreignField: "product_id",
+          as: "Review"
+        }
+      },
+      {
+        $addFields: {
+          AvgRating: {$avg : "$Review.rating"}
+        }
+      },
+      {
+        $match: matchObj
+      },
+      {
+        $group: {
+          _id: "$_id",
+          category_id : {$first : "$category_id"},
+          subcategory_id : {$first : "$subcategory_id"},
+          name: {$first: "$name"},
+          variant : {$push: "$Variant.attributes" },
+          rating : {$first: "$AvgRating"},
+        }
+      },
+      {
+        $sort :{
+          name: 1
+        }
+      }
+     
+    ]
+
+   
+
+  console.log(matchObj);
+  
+  console.log(ProductSearch);
+
+  
+   
+
+
+  } catch (error) {
+    
+  }
+}
+
 
 module.exports = {
   getproducts,
   postproduct,
   putproduct,
   deleteproduct,
-  getSubcat
+  getSubcat,
+  searchProduct
 }

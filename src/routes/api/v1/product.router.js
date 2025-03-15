@@ -4,7 +4,12 @@ const upload = require('../../../middleware/Upload')
 
 const routes = express.Router()
 
-//http://localhost:8000/api/v1/product/get-products
+//http://localhost:8000/api/v1/product/searchProduct
+routes.get(
+    '/searchProduct',
+    productController.searchProduct
+)
+
 routes.get(
     '/get-products',
     productController.getproducts
