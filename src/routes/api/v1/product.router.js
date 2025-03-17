@@ -10,6 +10,30 @@ routes.get(
     productController.searchProduct
 )
 
+//http://localhost:8000/api/v1/product/list/category
+routes.get(
+    '/list/category',
+    productController.CategoryProduct
+)   
+
+//http://localhost:8000/api/v1/product/list/subcategory
+routes.get(
+    '/list/subcategory',
+    productController.SubCategoryProduct
+)
+
+//http://localhost:8000/api/v1/product/variant-details
+routes.get(
+    '/variant-details',
+    productController.ProductVariant
+)
+
+//http://localhost:8000/api/v1/product/count-categories
+routes.get(
+    '/count-categories',
+    productController.ProductforCategory
+)
+
 routes.get(
     '/get-products',
     productController.getproducts

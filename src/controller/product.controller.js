@@ -2,6 +2,7 @@
 const Products = require("../models/product.model");
 const fs = require("fs");
 const SubCategores = require("../models/subCategory.model");
+var mongoose = require('mongoose');
 
 const getproducts = async (req, res) => {
   try {
@@ -283,6 +284,216 @@ const searchProduct = async (req, res) => {
   }
 }
 
+const CategoryProduct = async (req, res) => {
+  try {
+    console.log(req.params.id);
+    
+    const subcat = await Products.aggregate(
+      [
+        {
+          $lookup: {
+            from: "categores",
+            localField: "Category",
+            foreignField: "_id",
+            as: "category"
+          }
+        },
+        {
+          $unwind: "$category"
+        },
+        
+        {
+          $project: {
+            category_name: "$category.name",
+            product_name: "$name",
+            description: "$description",
+            price: "$price"
+          }
+        }
+      ]
+    )
+
+    if (!subcat) {
+      return res.status(400)
+        .json({
+          success: false,
+          data: null,
+          message: "Error"
+        })
+    }
+
+    return res.status(200)
+      .json({
+        success: true,
+        data: subcat,
+        message: "All Product List Succesfully"
+      })
+
+  } catch (error) {
+    return res.status(500)
+      .json({
+        success: false,
+        data: null,
+        message: "Internal server Error" + error.message
+      })
+  }
+};
+
+const SubCategoryProduct = async (req, res) => {
+  try {
+    console.log(req.params.id);
+    
+    const subcat = await Products.aggregate(
+      [
+        {
+          $lookup: {
+            from: "subcategores",
+            localField: "SubCategory",
+            foreignField: "_id",
+            as: "SubcatData"
+          }
+        },
+        {
+          $unwind: "$SubcatData"
+        },
+        {
+          $match: {
+            subcategory: new mongoose.Types.ObjectId(subcategory)
+          }
+        },
+        {
+          $project: {
+            subCat_name: "$SubcatData.name",
+            subCat_desc: "$SubcatData.description",
+            product: "$name",
+            desc: "$description",
+            price: "$price"
+          }
+        }
+      ]
+    )
+
+    if (!subcat) {
+      return res.status(400)
+        .json({
+          success: false,
+          data: null,
+          message: "Error"
+        })
+    }
+
+    return res.status(200)
+      .json({
+        success: true,
+        data: subcat,
+        message: "All Product List Succesfully"
+      })
+
+  } catch (error) {
+    return res.status(500)
+      .json({
+        success: false,
+        data: null,
+        message: "Internal server Error" + error.message
+      })
+  }
+};
+
+const ProductVariant = async (req, res) => {
+  try {
+    console.log(req.params.id);
+    
+    const subcat = await Products.aggregate(
+      [
+        {
+          $sort: {
+            createdAt: -1
+          }
+        },
+        {
+          $limit: 3
+        }
+      ]
+    )
+
+    if (!subcat) {
+      return res.status(400)
+        .json({
+          success: false,
+          data: null,
+          message: "Error"
+        })
+    }
+
+    return res.status(200)
+      .json({
+        success: true,
+        data: subcat,
+        message: "All Product List Succesfully"
+      })
+
+  } catch (error) {
+    return res.status(500)
+      .json({
+        success: false,
+        data: null,
+        message: "Internal server Error" + error.message
+      })
+  }
+};
+
+const ProductforCategory = async (req, res) => {
+  try {
+    console.log(req.params.id);
+    
+    const subcat = await Products.aggregate(
+      [
+        {
+          $lookup: {
+            from: "categores",
+            localField: "Category",
+            foreignField: "_id",
+            as: "categoryData"
+          }
+        },
+        {
+          $unwind: "$categoryData"
+        },
+        {
+          $group: {
+            _id: "$categoryData._id",
+            name: { $first: "$categoryData.name" },
+            contProduct: { $sum: 1 }
+          }
+        }
+      ]
+    )
+
+    if (!subcat) {
+      return res.status(400)
+        .json({
+          success: false,
+          data: null,
+          message: "Error"
+        })
+    }
+
+    return res.status(200)
+      .json({
+        success: true,
+        data: subcat,
+        message: "All Product List Succesfully"
+      })
+
+  } catch (error) {
+    return res.status(500)
+      .json({
+        success: false,
+        data: null,
+        message: "Internal server Error" + error.message
+      })
+  }
+};
 
 module.exports = {
   getproducts,
@@ -290,5 +501,9 @@ module.exports = {
   putproduct,
   deleteproduct,
   getSubcat,
-  searchProduct
+  searchProduct,
+  CategoryProduct,
+  ProductVariant,
+  SubCategoryProduct,
+  ProductforCategory
 }
