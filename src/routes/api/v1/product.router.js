@@ -66,4 +66,21 @@ routes.delete(
     productController.deleteproduct
 )
 
+
+
+
+
+// http://localhost:8000/api/v1/product/search
+
+routes.get(
+    '/search',
+    productController.searchDemoProduct
+)
+
+// http://localhost:8000/api/v1/product/out-of-stock  
+routes.get(
+    '/out-of-stock',
+    productController.getproductsNovariants
+)
+
 module.exports = routes;

@@ -495,6 +495,144 @@ const ProductforCategory = async (req, res) => {
   }
 };
 
+
+
+
+
+const searchDemoProduct = async (req, res) => {
+  try {
+    console.log(req.query);
+    
+    const matchObj = {}
+    const { category, min, max, rating } = req.query
+
+
+    if(category) {
+      matchObj["category_id"] = parseInt(category)
+    }
+
+    if(rating) {
+      matchObj["AvgRating"] = {$gte : parseFloat(rating)}
+    }
+
+    if(max || min) {
+      matchObj["Variant.attributes.Price"] = {}
+    }
+    
+    if(min) {
+      matchObj["Variant.attributes.Price"].$gte = parseFloat(min)
+    }
+
+    if(max) {
+      matchObj["Variant.attributes.Price"].$lte = parseFloat(max)
+    }
+
+    const pipeline = [
+      {
+        $lookup: {
+          from: "variant",
+          localField: "_id",
+          foreignField: "product_id",
+          as: "Variant"
+        }
+      },
+      {
+        $unwind: "$Variant"
+      },
+      {
+        $lookup: {
+          from: "review",	
+          localField: "_id",
+          foreignField: "product_id",
+          as: "Review"
+        }
+      },
+      {
+        $addFields: {
+          AvgRating: {$avg : "$Review.rating"}
+        }
+      },
+      {
+        $match: matchObj
+      },
+      {
+        $group: {
+          _id: "$_id",
+          category_id : {$first : "$category_id"},
+          subcategory_id : {$first : "$subcategory_id"},
+          name: {$first: "$name"},
+          variant : {$push: "$Variant.attributes" },
+          rating : {$first: "$AvgRating"},
+        }
+      },
+      {
+        $sort :{
+          name: 1
+        }
+      }
+     
+    ]
+
+   
+
+  console.log(matchObj);
+  
+  console.log(ProductSearch);
+
+  
+   
+
+
+  } catch (error) {
+    
+  }
+}
+
+const getproductsNovariants = async (req, res) => {
+  try {
+    console.log(req.params.id);
+    
+    const subcat = await Products.aggregate(
+      [
+        {
+          $match: {
+            variant_id: { $exists : false}
+          }
+        }
+      ]
+      
+    )
+
+    if (!subcat) {
+      return res.status(400)
+        .json({
+          success: false,
+          data: null,
+          message: "Error"
+        })
+    }
+
+    return res.status(200)
+      .json({
+        success: true,
+        data: subcat,
+        message: "All Product List Succesfully"
+      })
+
+  } catch (error) {
+    return res.status(500)
+      .json({
+        success: false,
+        data: null,
+        message: "Internal server Error" + error.message
+      })
+  }
+};
+
+
+
+
+
 module.exports = {
   getproducts,
   postproduct,
@@ -505,5 +643,7 @@ module.exports = {
   CategoryProduct,
   ProductVariant,
   SubCategoryProduct,
-  ProductforCategory
+  ProductforCategory,
+  getproductsNovariants,
+  searchDemoProduct
 }
