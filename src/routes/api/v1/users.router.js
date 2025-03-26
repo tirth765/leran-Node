@@ -9,8 +9,9 @@ user.post(
     usersController.user_register
 )
 
+// localhost:8000/api/v1/users/login
 user.get(
-    'login',
+    '/login',
     usersController.user_login
 )
 
