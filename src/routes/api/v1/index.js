@@ -6,10 +6,13 @@ const port = 8000
 const productRouter = require('./product.router')
 const categoryRouter = require('./category.router')
 const subCategoryRouter = require('./subCategory.router')
+const usersRouter = require('./users.router')
 
 router.use('/product', productRouter)
 router.use('/category', categoryRouter)
 router.use('/subCategory', subCategoryRouter)
+router.use('/users', usersRouter)
+
 
 module.exports = router
 
