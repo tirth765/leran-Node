@@ -6,11 +6,11 @@ const user = express.Router()
 // localhost:8000/api/v1/users/register
 user.post(
     '/register',
-    usersController.user_register
+    usersController.registerUser
 )
 
 // localhost:8000/api/v1/users/login
-user.get(
+user.post(
     '/login',
     usersController.user_login
 )
