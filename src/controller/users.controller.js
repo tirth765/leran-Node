@@ -8,7 +8,7 @@ const generate_user = async (userID) => {
 
   const accessToken = await jwt.sign(
     {
-      id: user._id,
+      _id: user._id,
       role: user.role,
       expiresIn: process.env.ACCESS_TOKEN_EXPIRED,
     },
@@ -18,16 +18,16 @@ const generate_user = async (userID) => {
 
   const refreshToken = await jwt.sign(
     {
-      id: user._id,
+      _id: user._id,
       expiresIn: process.env.REFRESH_TOKEN_EXPIRED,
     },
     process.env.REFRESH_TOKEN_SECRET,
     { expiresIn: process.env.REFRESH_TOKEN_EXPIRED }
   );
 
-  user.refreshToken = refreshToken
+  user.refreshToken = refreshToken;
 
-  await user.save({validateBeforeSave: false})
+  await user.save({ validateBeforeSave: false });
 
   return { accessToken, refreshToken };
 };
@@ -101,24 +101,25 @@ const user_login = async (req, res) => {
       });
     }
 
-    const userData = await Users.findById(user._id).select("-password-refreshToken");
+    const userData = await Users.findById(user._id).select(
+      "-password-refreshToken"
+    );
 
     const options = {
       httpOnly: true,
       secure: true,
     };
 
-   const {accessToken, refreshToken} = await generate_user(user._id);
+    const { accessToken, refreshToken } = await generate_user(user._id);
 
     return res
       .status(200)
       .cookie("accessToken", accessToken, options)
       .cookie("refreshToken", refreshToken, options)
-
       .json({
         success: true,
         data: userData,
-        message: "Login successful",
+        message: "Login successfull",
       });
   } catch (error) {
     return res.status(500).json({
@@ -129,7 +130,132 @@ const user_login = async (req, res) => {
   }
 };
 
+const generateNewTokens = async (req, res) => {
+  try {
+    console.log(
+      req.cookies.refreshToken,
+      req.headers.authorization.replace("Bearer ", "")
+    );
+
+    const token =
+      req.cookies.refreshToken ||
+      req.headers.authorization.replace("Bearer ", "");
+
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        data: [],
+        message: "token not found",
+      });
+    }
+
+    try {
+
+      const varifyTocken = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+
+      console.log(varifyTocken._id);
+
+      if (!varifyTocken) {
+        return res.status(400).json({
+          success: false,
+          data: [],
+          message: "token not verify",
+        });
+      }
+
+      const user = await Users.findById(varifyTocken._id);
+      console.log(user);
+
+      if(user.refreshToken !== token) {
+        return res.status(400).json({
+          success: false,
+          data: [],
+          message: "invalid user token",
+        });
+      }
+
+      const options = {
+        httpOnly: true,
+        secure: true,
+      };
+
+      const { accessToken, refreshToken } = await generate_user(user._id);
+
+      return res
+        .status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json({
+          success: true,
+          data: user,
+          message: "Token created successfully",
+        });
+
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        data: [],
+        message: "Error in server: " + error.message,
+      });
+    }
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      data: [],
+      message: "Error in server: " + error.message,
+    });
+  }
+};
+
+const user_logout = async (req, res) => {
+ 
+ try {
+  console.log(req.body._id);
+
+  const data = await Users.findByIdAndUpdate(
+    req.body._id,
+    {
+      $unset: {
+        refreshToken: 1
+      }
+    },
+    {
+      new: true
+    }
+  )
+
+  console.log(data);
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res.status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json({
+      success: true,
+      message: "Logout successfull",
+    });
+  
+ } catch (error) {
+  return res.status(500).json({
+    success: false,
+    data: [],
+    message: "Error in server: " + error.message,
+  });
+ }
+
+
+  
+  
+}
+
 module.exports = {
   registerUser,
   user_login,
+  generateNewTokens,
+  user_logout
 };

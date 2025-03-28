@@ -15,4 +15,16 @@ user.post(
     usersController.user_login
 )
 
+// localhost:8000/api/v1/users/generateNewTokens
+user.get(
+    '/generateNewTokens',
+    usersController.generateNewTokens
+)
+
+// localhost:8000/api/v1/users/logout
+user.get(
+    '/logout',
+    usersController.user_logout
+)
+
 module.exports = user
