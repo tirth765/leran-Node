@@ -26,5 +26,5 @@ user.get(
     '/logout',
     usersController.user_logout
 )
-
+ 
 module.exports = user
