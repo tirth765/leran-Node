@@ -26,5 +26,10 @@ user.get(
     '/logout',
     usersController.user_logout
 )
+
+user.get(
+    '/chackAuth',
+    usersController.chackAuth
+)
  
 module.exports = user

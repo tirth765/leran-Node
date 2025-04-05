@@ -1,13 +1,14 @@
- const { categoryController } = require("../../../controller/index.js");
- const express = require('express');
+const { categoryController } = require("../../../controller/index.js");
+const express = require('express');
 const upload = require("../../../middleware/Upload.js");
+const auth = require("../../../middleware/auth.js");
 
 const routes = express.Router();
 
 //http://localhost:8000/api/v1/category/list-categores
 routes.get(
   "/list-categores",
-
+  auth(["employee", "admin", "user"]),
   categoryController.listCategores
 );
 

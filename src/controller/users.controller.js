@@ -166,7 +166,7 @@ const generateNewTokens = async (req, res) => {
       const user = await Users.findById(varifyTocken._id);
       console.log(user);
 
-      if(user.refreshToken !== token) {
+      if (user.refreshToken !== token) {
         return res.status(400).json({
           success: false,
           data: [],
@@ -209,53 +209,96 @@ const generateNewTokens = async (req, res) => {
 };
 
 const user_logout = async (req, res) => {
- 
- try {
-  console.log(req.body._id);
 
-  const data = await Users.findByIdAndUpdate(
-    req.body._id,
-    {
-      $unset: {
-        refreshToken: 1
+  try {
+    console.log(req.body._id);
+
+    const data = await Users.findByIdAndUpdate(
+      req.body._id,
+      {
+        $unset: {
+          refreshToken: 1
+        }
+      },
+      {
+        new: true
       }
-    },
-    {
-      new: true
-    }
-  )
+    )
 
-  console.log(data);
+    console.log(data);
 
-  const options = {
-    httpOnly: true,
-    secure: true,
-  };
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
 
-  return res.status(200)
-    .clearCookie("accessToken", options)
-    .clearCookie("refreshToken", options)
-    .json({
-      success: true,
-      message: "Logout successfull",
+    return res.status(200)
+      .clearCookie("accessToken", options)
+      .clearCookie("refreshToken", options)
+      .json({
+        success: true,
+        message: "Logout successfull",
+      });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      data: [],
+      message: "Error in server: " + error.message,
     });
-  
- } catch (error) {
-  return res.status(500).json({
-    success: false,
-    data: [],
-    message: "Error in server: " + error.message,
-  });
- }
+  }
+
+}
 
 
-  
-  
+const chackAuth = async (req, res) => {
+  try {
+
+    const token =
+      req.cookies.refreshToken ||
+      req.headers.authorization.replace("Bearer ", "");
+
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        data: [],
+        message: "token not found",
+      });
+    }
+
+    const varifyTocken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+    console.log(varifyTocken._id);
+
+    if (!varifyTocken) {
+      return res.status(400).json({
+        success: false,
+        data: [],
+        message: "token not verify",
+      });
+    }
+
+    const userData = await Users.findById(varifyTocken._id)
+
+    return res.status(200).json({
+      success: true,
+      data: userData,
+      message: "successFul",
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      data: [],
+      message: "error in server" + error.message,
+    });
+  }
 }
 
 module.exports = {
   registerUser,
   user_login,
   generateNewTokens,
-  user_logout
+  user_logout,
+  chackAuth
 };
