@@ -21,14 +21,14 @@ routes.get(
 routes.post(
   "/post-category",
   upload.single('cat_img'), 
-  auth(["employee", "admin", "user"]),
+  auth(["admin"]),
   categoryController.addCategory
 );
 
 //http://localhost:8000/api/v1/category/put-category:id
 routes.put(
   "/put-category/:id",
-  auth(["employee", "admin", "user"]),
+  auth(["admin"]),
   upload.single('cat_img'), 
   categoryController.updateCategory
 );
@@ -36,7 +36,7 @@ routes.put(
 //http://localhost:8000/api/v1/category/delete-category:id
 routes.delete(
   "/delete-category/:id",
-  auth(["employee", "admin", "user"]),
+  auth(["admin"]),
   categoryController.deleteCategory
 );
 
