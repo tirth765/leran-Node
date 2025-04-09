@@ -1,5 +1,6 @@
 const express = require('express')
 const { usersController } = require('../../../controller')
+const passport = require('passport')
 
 const user = express.Router()
 
@@ -32,5 +33,15 @@ user.get(
     '/checkAuth',
     usersController.check_Auth
 )
+
+user.get('/google',
+    passport.authenticate('google', { scope: ['profile', 'email'] }));
+  
+  user.get('/callback', 
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    function(req, res) {
+      // Successful authentication, redirect home.
+      res.redirect('/');
+    })
  
 module.exports = user
