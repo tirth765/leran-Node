@@ -2,6 +2,7 @@
 const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
 const Users = require("../models/users.model");
+const Mailer = require("../utils/nodeMailer");
 
 const generate_user = async (userID) => {
   const user = await Users.findById(userID);
@@ -55,6 +56,8 @@ const registerUser = async (req, res) => {
       const User = await Users.create({ ...req.body, password: hashPassword });
 
       const userData = await Users.findById(User._id).select("-password");
+      
+      Mailer()
 
       return res.status(201).json({
         success: true,
@@ -111,6 +114,8 @@ const user_login = async (req, res) => {
     };
 
     const { accessToken, refreshToken } = await generate_user(user._id);
+
+    
 
     return res
       .status(200)
@@ -296,4 +301,5 @@ module.exports = {
   generateNewTokens,
   user_logout,
   check_Auth,
+  generate_user
 };

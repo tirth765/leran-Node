@@ -1,6 +1,8 @@
 const express = require('express')
 const { usersController } = require('../../../controller')
 const passport = require('passport')
+const { generate_user } = require('../../../controller/users.controller')
+const Users = require('../../../models/users.model')
 
 const user = express.Router()
 
@@ -36,12 +38,35 @@ user.get(
 
 user.get('/google',
     passport.authenticate('google', { scope: ['profile', 'email'] }));
-  
-  user.get('/callback', 
+
+user.get('/callback',
     passport.authenticate('google', { failureRedirect: '/login' }),
-    function(req, res) {
-      // Successful authentication, redirect home.
-      res.redirect('/');
+    async function (req, res) {
+        console.log(req.user);
+
+        if (req.user) {
+
+            const userData = await Users.findById(req.user._id).select(
+                "-password-refreshToken"
+            );
+
+            const options = {
+                httpOnly: true,
+                secure: true,
+            };
+
+            const { accessToken, refreshToken } = await generate_user(req.user._id);
+
+            return res
+                .status(200)
+                .cookie("accessToken", accessToken, options)
+                .cookie("refreshToken", refreshToken, options)
+                .redirect('http://localhost:3000');
+
+   
+                
+        }
+
     })
- 
+
 module.exports = user
